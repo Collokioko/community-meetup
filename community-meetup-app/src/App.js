@@ -7,6 +7,8 @@ import Dashboard from './components/Dashboard';
 import CreateEvent from './components/CreateEvent';
 import EventList from './components/EventList';
 import './components/styles.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 const App = () => (
     <Router>
