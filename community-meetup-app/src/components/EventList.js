@@ -1,5 +1,5 @@
-// src/components/EventList.js
 import React, { useEffect, useState } from 'react';
+import { Container, Button, ListGroup, ListGroupItem } from 'react-bootstrap';
 
 const EventList = () => {
     const [events, setEvents] = useState([]);
@@ -17,22 +17,22 @@ const EventList = () => {
     };
 
     return (
-        <div>
-            <h1>Events</h1>
-            <ul>
+        <Container className="mt-5">
+            <h1 className="mb-4 text-center">Events</h1>
+            <ListGroup>
                 {events.map(event => (
-                    <li key={event._id}>
+                    <ListGroupItem key={event._id} className="d-flex justify-content-between align-items-center">
                         <div>
-                            <h3>{event.title}</h3>
+                            <h5>{event.title}</h5>
                             <p>{event.description}</p>
                             <p>{event.date} - {event.time}</p>
                             <p>{event.location}</p>
                         </div>
-                        <button onClick={() => handleRSVP(event._id)}>RSVP</button>
-                    </li>
+                        <Button variant="primary" onClick={() => handleRSVP(event._id)}>RSVP</Button>
+                    </ListGroupItem>
                 ))}
-            </ul>
-        </div>
+            </ListGroup>
+        </Container>
     );
 };
 

@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { Form, Button, Container } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+// Dummy authentication check (replace with actual logic)
+const isAuthenticated = () => {
+    return !!localStorage.getItem('user'); // Check if 'user' exists in localStorage
+};
 
 const CreateEvent = () => {
     const [title, setTitle] = useState('');
@@ -8,11 +14,28 @@ const CreateEvent = () => {
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [location, setLocation] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!isAuthenticated()) {
+            alert('You must be logged in to create an event. Redirecting to login...');
+            navigate('/login');
+            return;
+        }
+
+        // Handle event creation logic here
         alert(`Event created: ${title}, ${description}, ${date}, ${time}, ${location}`);
     };
+
+    if (!isAuthenticated()) {
+        return (
+            <Container className="mt-5">
+                <h1 className="mb-4 text-center">Create Event</h1>
+                <p className="text-center">You need to be logged in to create an event. Please <a href="/login">login</a> or <a href="/register">register</a>.</p>
+            </Container>
+        );
+    }
 
     return (
         <Container className="mt-5">
