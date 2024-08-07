@@ -32,7 +32,7 @@ const CreateEvent = () => {
         return (
             <Container className="mt-5">
                 <h1 className="mb-4 text-center">Create Event</h1>
-                <p className="text-center">You need to be logged in to create an event. Please <a href="/login">login</a> or <a href="/register">register</a>.</p>
+                <p className="text-center">You need to be logged in to create an event. Please <a href="/login">login</a> or <a href="/register">Sign Up</a>.</p>
             </Container>
         );
     }
