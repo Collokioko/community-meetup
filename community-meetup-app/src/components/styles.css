@@ -95,3 +95,26 @@ li button:hover {
 .dashboard nav ul li a:hover {
     text-decoration: underline;
 }
+/* Styling for Contact page h1 */
+.contact-title {
+    color: #007bff; /* Blue color for the heading */
+    font-size: 2rem; /* Larger font size */
+    margin-bottom: 20px; /* Space below the heading */
+    text-align: center; /* Center the heading */
+}
+/* Navbar styles */
+.navbar {
+    margin-bottom: 30px;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.form-control {
+    border-radius: 0.25rem;
+}
+
+.btn-primary {
+    border-radius: 0.25rem;
+}

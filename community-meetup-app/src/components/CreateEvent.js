@@ -1,5 +1,6 @@
-// src/components/CreateEvent.js
 import React, { useState } from 'react';
+import { Form, Button, Container } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const CreateEvent = () => {
     const [title, setTitle] = useState('');
@@ -14,17 +15,68 @@ const CreateEvent = () => {
     };
 
     return (
-        <div>
-            <h1>Create Event</h1>
-            <form onSubmit={handleSubmit}>
-                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" required />
-                <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" required />
-                <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
-                <input type="time" value={time} onChange={(e) => setTime(e.target.value)} required />
-                <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" required />
-                <button type="submit">Create Event</button>
-            </form>
-        </div>
+        <Container className="mt-5">
+            <h1 className="mb-4 text-center">Create Event</h1>
+            <Form onSubmit={handleSubmit}>
+                <Form.Group controlId="formTitle" className="mb-3">
+                    <Form.Label>Title</Form.Label>
+                    <Form.Control 
+                        type="text" 
+                        placeholder="Enter event title" 
+                        value={title} 
+                        onChange={(e) => setTitle(e.target.value)} 
+                        required 
+                    />
+                </Form.Group>
+                
+                <Form.Group controlId="formDescription" className="mb-3">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control 
+                        as="textarea" 
+                        rows={3} 
+                        placeholder="Enter event description" 
+                        value={description} 
+                        onChange={(e) => setDescription(e.target.value)} 
+                        required 
+                    />
+                </Form.Group>
+                
+                <Form.Group controlId="formDate" className="mb-3">
+                    <Form.Label>Date</Form.Label>
+                    <Form.Control 
+                        type="date" 
+                        value={date} 
+                        onChange={(e) => setDate(e.target.value)} 
+                        required 
+                    />
+                </Form.Group>
+                
+                <Form.Group controlId="formTime" className="mb-3">
+                    <Form.Label>Time</Form.Label>
+                    <Form.Control 
+                        type="time" 
+                        value={time} 
+                        onChange={(e) => setTime(e.target.value)} 
+                        required 
+                    />
+                </Form.Group>
+                
+                <Form.Group controlId="formLocation" className="mb-4">
+                    <Form.Label>Location</Form.Label>
+                    <Form.Control 
+                        type="text" 
+                        placeholder="Enter event location" 
+                        value={location} 
+                        onChange={(e) => setLocation(e.target.value)} 
+                        required 
+                    />
+                </Form.Group>
+                
+                <Button variant="primary" type="submit">
+                    Create Event
+                </Button>
+            </Form>
+        </Container>
     );
 };
 
