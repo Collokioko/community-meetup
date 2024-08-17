@@ -1,5 +1,4 @@
-/* src/components/styles.css */
-
+/* Global Styles */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
@@ -7,20 +6,31 @@ body {
     padding: 0;
 }
 
+/* Container Styles */
 .container {
     max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
+    margin: 40px auto;
+    padding: 40px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Typography */
 h1, h2 {
     text-align: center;
     color: #333;
+    margin-bottom: 30px;
 }
 
+.contact-title {
+    color: #0056b3; /* Blue color for the heading */
+    font-size: 2.5rem; /* Larger font size */
+    margin-bottom: 30px; /* Space below the heading */
+    text-align: center; /* Center the heading */
+}
+
+/* Form Styles */
 form {
     display: flex;
     flex-direction: column;
@@ -31,6 +41,13 @@ input, button {
     margin: 10px 0;
     border-radius: 4px;
     border: 1px solid #ccc;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+    outline: none;
 }
 
 button {
@@ -38,12 +55,16 @@ button {
     color: #fff;
     border: none;
     cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 button:hover {
     background-color: #0056b3;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
 
+/* List Styles */
 ul {
     list-style: none;
     padding: 0;
@@ -51,28 +72,35 @@ ul {
 
 li {
     padding: 10px;
-    background-color: #f9f9f9;
+    background: linear-gradient(145deg, #f9f9f9, #e6e6e6);
     margin-bottom: 10px;
-    border-radius: 4px;
+    border-radius: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+li:hover {
+    transform: translateY(-5px);
 }
 
 li button {
     background-color: #28a745;
     border: none;
-    padding: 5px 10px;
+    padding: 8px 12px;
     cursor: pointer;
     border-radius: 4px;
     color: #fff;
+    transition: background-color 0.3s ease;
 }
 
 li button:hover {
     background-color: #218838;
 }
-/* src/components/styles.css */
 
+/* Dashboard Styles */
 .dashboard {
     text-align: center;
 }
@@ -95,20 +123,38 @@ li button:hover {
 .dashboard nav ul li a:hover {
     text-decoration: underline;
 }
-/* Styling for Contact page h1 */
-.contact-title {
-    color: #007bff; /* Blue color for the heading */
-    font-size: 2rem; /* Larger font size */
-    margin-bottom: 20px; /* Space below the heading */
-    text-align: center; /* Center the heading */
-}
-/* Navbar styles */
+
+/* Navbar Styles */
 .navbar {
-    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.9);
 }
 
 .navbar-brand {
     font-weight: bold;
+    color: #007bff !important;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand img {
+    margin-right: 10px;
+}
+
+.navbar-nav .nav-link {
+    color: #007bff;
+    font-weight: 500;
+    margin-right: 15px;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #0056b3;
+}
+
+.navbar-nav .nav-link.active {
+    color: #0056b3;
+    font-weight: bold;
+    border-bottom: 2px solid #0056b3;
 }
 
 .form-control {
@@ -117,4 +163,82 @@ li button:hover {
 
 .btn-primary {
     border-radius: 0.25rem;
+}
+
+/* Contact Form Styles */
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.contact-form input, 
+.contact-form textarea {
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-form input:focus, 
+.contact-form textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+/* Home Page Styles */
+.home-container {
+    background-image: url('../assets//images/hero-image.jpg');
+    /* Replace with your hero image */
+    background-size: cover;
+    background-position: center;
+    color: white; /* Text color to contrast with background */
+    padding: 100px 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.home-title {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.home-subtitle {
+    font-size: 1.25rem;
+    margin-bottom: 40px;
+    font-weight: 300;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Footer Styles */
+.footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.footer a {
+    color: #007bff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.footer a:hover {
+    color: #0056b3;
+    text-decoration: underline;
 }
