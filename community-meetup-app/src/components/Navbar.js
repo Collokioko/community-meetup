@@ -18,7 +18,7 @@ const NavbarComponent = () => {
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="ml-auto">
+                <Nav className="ml-auto"> {/* Aligns to the right */}
                     <Nav.Link 
                         as={Link} 
                         to="/" 

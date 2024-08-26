@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Button, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Container, Button, ListGroup, ListGroupItem, Row, Col } from 'react-bootstrap';
+import './styles.css'; // Make sure to add your custom styles here
 
 const EventList = () => {
     const [events, setEvents] = useState([]);
@@ -18,17 +19,24 @@ const EventList = () => {
 
     return (
         <Container className="mt-5">
-            <h1 className="mb-4 text-center">Events</h1>
+            <h1 className="mb-4 text-center">Upcoming Events</h1>
             <ListGroup>
                 {events.map(event => (
-                    <ListGroupItem key={event._id} className="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h5>{event.title}</h5>
-                            <p>{event.description}</p>
-                            <p>{event.date} - {event.time}</p>
-                            <p>{event.location}</p>
-                        </div>
-                        <Button variant="primary" onClick={() => handleRSVP(event._id)}>RSVP</Button>
+                    <ListGroupItem key={event._id} className="event-item">
+                        <Row>
+                            <Col md={8}>
+                                <h5>{event.title}</h5>
+                                <p>{event.description}</p>
+                                <p><strong>Date:</strong> {event.date}</p>
+                                <p><strong>Time:</strong> {event.time}</p>
+                                <p><strong>Location:</strong> {event.location}</p>
+                            </Col>
+                            <Col md={4} className="text-md-right text-center">
+                                <Button variant="primary" onClick={() => handleRSVP(event._id)}>
+                                    RSVP
+                                </Button>
+                            </Col>
+                        </Row>
                     </ListGroupItem>
                 ))}
             </ListGroup>
