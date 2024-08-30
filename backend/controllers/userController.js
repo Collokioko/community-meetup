@@ -1,5 +1,4 @@
-// controllers/userController.js
-
+// backend/controllers/userController.js
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 
@@ -7,6 +6,7 @@ const bcrypt = require('bcryptjs');
 exports.getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password'); // Exclude password from the response
+    if (!user) return res.status(404).json({ msg: 'User not found' }); // Handle user not found
     res.json(user);
   } catch (err) {
     console.error(err.message);
