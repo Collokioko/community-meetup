@@ -3,13 +3,17 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const createError = require('http-errors'); // Import http-errors
 
 // Register a new user
-exports.register = async (req, res) => {
+exports.register = async (req, res, next) => {
   const { name, email, password, role } = req.body; // Accept role from request
   try {
     let user = await User.findOne({ email });
-    if (user) return res.status(400).json({ msg: 'User already exists' });
+    if (user) {
+      // Throw a 400 error if the user already exists
+      return next(createError(400, 'User already exists'));
+    }
 
     // Hash the password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -19,32 +23,42 @@ exports.register = async (req, res) => {
 
     const payload = { user: { id: user.id, role: user.role } }; // Include role in the payload
     jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
-      if (err) throw err;
+      if (err) {
+        return next(createError(500, 'Error generating token')); // Use http-errors for server errors
+      }
       res.json({ token });
     });
   } catch (err) {
     console.error(err.message); // Log error for debugging
-    res.status(500).send('Server error');
+    next(createError(500, 'Server error')); // Use http-errors for server errors
   }
 };
 
 // Login a user
-exports.login = async (req, res) => {
+exports.login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ msg: 'Invalid credentials' });
+    if (!user) {
+      // Throw a 400 error for invalid credentials
+      return next(createError(400, 'Invalid credentials'));
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
+    if (!isMatch) {
+      // Throw a 400 error for invalid credentials
+      return next(createError(400, 'Invalid credentials'));
+    }
 
     const payload = { user: { id: user.id, role: user.role } }; // Include role in the payload
     jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
-      if (err) throw err;
+      if (err) {
+        return next(createError(500, 'Error generating token')); // Use http-errors for server errors
+      }
       res.json({ token });
     });
   } catch (err) {
     console.error(err.message); // Log error for debugging
-    res.status(500).send('Server error');
+    next(createError(500, 'Server error')); // Use http-errors for server errors
   }
 };
