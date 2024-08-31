@@ -1,45 +1,48 @@
-// backend/server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
-const eventRoutes = require('./routes/eventRoutes'); // Add event routes if applicable
 const dotenv = require('dotenv');
-const createError = require('http-errors'); // Import http-errors
-const errorHandler = require('./middleware/errorHandler'); // Import custom error handler
+const createError = require('http-errors');
 
-dotenv.config(); // Load environment variables from .env file
+dotenv.config();
 
 const app = express();
 
 // Middleware
-app.use(express.json()); // Parses incoming JSON requests
+app.use(express.json());
 
 // Routes
-app.use('/api/users', userRoutes); // User-related routes
-app.use('/api/auth', authRoutes);  // Authentication-related routes
-app.use('/api/events', eventRoutes); // Event-related routes if applicable
+app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
 
-// Handle unknown routes
+// Error handling middleware
 app.use((req, res, next) => {
-  next(createError(404, 'Route not found'));
+  next(createError(404, 'Not Found'));
+});
+
+app.use((err, req, res, next) => {
+  res.status(err.status || 500);
+  res.json({
+    error: {
+      message: err.message,
+      ...(process.env.NODE_ENV === 'development' ? { stack: err.stack } : {})
+    }
+  });
 });
 
 // Connect to MongoDB
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI); // Connect to MongoDB with connection string from env file
+    await mongoose.connect(process.env.MONGO_URI);
     console.log('MongoDB connected');
   } catch (err) {
-    console.error(`MongoDB connection error: ${err.message}`);
-    process.exit(1); // Exit process with failure
+    console.error(err.message);
+    process.exit(1);
   }
 };
 
-connectDB(); // Call the function to connect to MongoDB
-
-// Custom error handler middleware
-app.use(errorHandler);
+connectDB();
 
 // Start the server
 const PORT = process.env.PORT || 5000;
