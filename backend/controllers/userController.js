@@ -1,17 +1,24 @@
 // backend/controllers/userController.js
 const User = require('../models/User');
-const bcrypt = require('bcryptjs');
+const argon2 = require('argon2');
 const createError = require('http-errors'); // Import http-errors
 
 // Get user profile
 exports.getUserProfile = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id).select('-password'); // Exclude password from the response
-    if (!user) return next(createError(404, 'User not found')); // Use createError for 404
+    // Find the user by their ID and exclude the password from the response
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      // Throw a 404 error if the user is not found
+      return next(createError(404, 'User not found'));
+    }
 
+    // Return the user profile
     res.json(user);
   } catch (err) {
-    next(createError(500, 'Server error')); // Use createError for 500
+    console.error("Error fetching user profile:", err.message);
+    // Use createError for server errors
+    next(createError(500, 'Server error'));
   }
 };
 
@@ -19,34 +26,49 @@ exports.getUserProfile = async (req, res, next) => {
 exports.updateUserProfile = async (req, res, next) => {
   const { name, email, password } = req.body;
   try {
+    // Find the user by their ID
     let user = await User.findById(req.user.id);
 
-    if (!user) return next(createError(404, 'User not found')); // Use createError for 404
+    if (!user) {
+      // Throw a 404 error if the user is not found
+      return next(createError(404, 'User not found'));
+    }
 
     // Update fields if provided
     if (name) user.name = name;
     if (email) user.email = email;
 
     if (password) {
-      // Hash the new password before saving
-      user.password = await bcrypt.hash(password, 10);
+      // Hash the new password using Argon2 before saving
+      user.password = await argon2.hash(password);
     }
 
+    // Save the updated user profile
     await user.save();
+    // Return the updated user profile
     res.json(user);
   } catch (err) {
-    next(createError(500, 'Server error')); // Use createError for 500
+    console.error("Error updating user profile:", err.message);
+    // Use createError for server errors
+    next(createError(500, 'Server error'));
   }
 };
 
 // Delete user profile (for admin or self-delete)
 exports.deleteUser = async (req, res, next) => {
   try {
+    // Find the user by their ID and remove them from the database
     const user = await User.findByIdAndRemove(req.user.id);
-    if (!user) return next(createError(404, 'User not found')); // Use createError for 404
+    if (!user) {
+      // Throw a 404 error if the user is not found
+      return next(createError(404, 'User not found'));
+    }
 
+    // Return a success message after deletion
     res.json({ msg: 'User deleted' });
   } catch (err) {
-    next(createError(500, 'Server error')); // Use createError for 500
+    console.error("Error deleting user profile:", err.message);
+    // Use createError for server errors
+    next(createError(500, 'Server error'));
   }
 };
