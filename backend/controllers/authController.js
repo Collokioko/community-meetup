@@ -1,61 +1,58 @@
 const User = require('../models/User');
-const jwt = require('jsonwebtoken');
-const argon2 = require('argon2');
 const createError = require('http-errors');
+const { authSchema, loginSchema } = require('../helpers/validationSchema');
+const { signAccessToken, signRefreshToken } = require('../helpers/jwtHelper');
 
 // Register a new user
-exports.register = async (req, res, next) => {
-  const { name, email, password } = req.body;  // Accept name, email, and password
-  try {
-    // Hash the password using Argon2
-    const hashedPassword = await argon2.hash(password);
+module.exports = {
+  register: async (req, res, next) => {
+    try {
+      // Validate request body
+      const result = await authSchema.validateAsync(req.body);
 
-    // Create a new user document with name, email, and hashed password
-    const user = new User({
-      name,                // Store the name
-      email,
-      passwordHash: hashedPassword,  // Store the hashed password
-    });
+      const { name, email, password, role } = result;
 
-    // Save the user document
-    await user.save();
+      // Check if user already exists
+      const exists = await User.findOne({ email });
+      if (exists) throw createError.Conflict(`${email} has already been registered`);
 
-    // Return a success response
-    res.json({ message: 'User created successfully' });
-  } catch (err) {
-    console.error("Error during registration:", err.message);
-    next(createError(500, 'Server error'));
+      // Create and save the new user
+      const user = new User({ name, email, password, role });
+      const savedUser = await user.save();
+
+      // Generate access and refresh tokens
+      const accessToken = await signAccessToken(savedUser.id);
+      const refreshToken = await signRefreshToken(savedUser.id);
+
+      res.send({ accessToken, refreshToken });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  login: async (req, res, next) => {
+    try {
+      // Validate request body
+      const result = await loginSchema.validateAsync(req.body);
+
+      const { email, password } = result;
+
+      // Find user by email
+      const user = await User.findOne({ email });
+      if (!user) throw createError.NotFound('User not registered');
+
+      // Validate password
+      const isMatch = await user.isValidPassword(password);
+      if (!isMatch) throw createError.Unauthorized('Invalid username/password');
+
+      // Generate access and refresh tokens
+      const accessToken = await signAccessToken(user.id);
+      const refreshToken = await signRefreshToken(user.id);
+
+      res.send({ accessToken, refreshToken });
+    } catch (error) {
+      if (error.isJoi === true) return next(createError.BadRequest('Invalid input data'));
+      next(error);
+    }
   }
 };
-
-exports.login = async (req, res, next) => {
-  const { email, password } = req.body;
-  try {
-    // Find the user by email
-    const user = await User.findOne({ email });
-    if (!user) {
-      return next(createError(401, 'User not found'));
-    }
-
-    // Compare the provided password with the stored password hash
-    const isMatch = await argon2.verify(user.passwordHash, password);
-
-    // If the password doesn't match, return invalid credentials
-    if (!isMatch) {
-      return next(createError(401, 'Invalid credentials'));
-    }
-
-    // If the password is valid, generate a JWT token
-    const payload = { user: { id: user.id, role: user.role } };
-    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
-      if (err) {
-        return next(createError(500, 'Error generating token'));
-      }
-      res.json({ token });
-    });
-  } catch (err) {
-    console.error("Error during login:", err.message);
-    next(createError(500, 'Server error'));
-  }
-};
-

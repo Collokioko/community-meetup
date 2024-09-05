@@ -1,6 +1,5 @@
-// backend/controllers/userController.js
 const User = require('../models/User');
-const argon2 = require('argon2');
+const bcrypt = require('bcryptjs');
 const createError = require('http-errors'); // Import http-errors
 
 // Get user profile
@@ -39,8 +38,9 @@ exports.updateUserProfile = async (req, res, next) => {
     if (email) user.email = email;
 
     if (password) {
-      // Hash the new password using Argon2 before saving
-      user.password = await argon2.hash(password);
+      // Hash the new password using bcryptjs before saving
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
     }
 
     // Save the updated user profile
