@@ -4,7 +4,7 @@ const initMongoDB = require('./helpers/initMongoDB'); // Correctly initialize Mo
 const authRoutes = require('./routes/authRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const errorHandler = require('./middleware/errorHandler'); // Enhanced error handler
-
+const userRoutes = require('./routes/userRoutes')
 const app = express();
 
 app.use(express.json());
@@ -15,7 +15,7 @@ initMongoDB();
 // Use Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
-
+app.use('/api/users', userRoutes)
 // Global Error Handler
 app.use(errorHandler);
 
