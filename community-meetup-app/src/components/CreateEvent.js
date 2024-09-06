@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Form, Button, Container } from 'react-bootstrap';
+import { Form, Button, Container, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Dummy authentication check (replace with actual logic)
 const isAuthenticated = () => {
-    return !!localStorage.getItem('user'); // Check if 'user' exists in localStorage
+    return !!localStorage.getItem('authToken'); // Check if 'authToken' exists in localStorage
 };
 
 const CreateEvent = () => {
@@ -14,6 +15,8 @@ const CreateEvent = () => {
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [location, setLocation] = useState('');
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -24,15 +27,31 @@ const CreateEvent = () => {
             return;
         }
 
-        // Handle event creation logic here
-        alert(`Event created: ${title}, ${description}, ${date}, ${time}, ${location}`);
+        setError('');
+        setSuccess('');
+        try {
+            const token = localStorage.getItem('authToken');
+             await axios.post(
+                'http://localhost:5000/api/events',
+                { title, description, date: `${date}T${time}`, location },
+                { headers: { 'x-auth-token': token } }
+            );
+            setSuccess('Event created successfully!');
+            setTimeout(() => {
+                navigate('/events'); // Redirect to the events list or another page
+            }, 2000);
+        } catch (error) {
+            setError('Failed to create event. Please try again.');
+        }
     };
 
     if (!isAuthenticated()) {
         return (
             <Container className="mt-5">
                 <h1 className="mb-4 text-center">Create Event</h1>
-                <p className="text-center">You need to be logged in to create an event. Please <a href="/login">login</a> or <a href="/register">Sign Up</a>.</p>
+                <p className="text-center">
+                    You need to be logged in to create an event. Please <a href="/login">login</a> or <a href="/register">Sign Up</a>.
+                </p>
             </Container>
         );
     }
@@ -40,6 +59,8 @@ const CreateEvent = () => {
     return (
         <Container className="mt-5">
             <h1 className="mb-4 text-center">Create Event</h1>
+            {error && <Alert variant="danger">{error}</Alert>}
+            {success && <Alert variant="success">{success}</Alert>}
             <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="formTitle" className="mb-3">
                     <Form.Label>Title</Form.Label>

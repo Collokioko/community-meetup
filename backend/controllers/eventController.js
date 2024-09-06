@@ -55,7 +55,7 @@ exports.deleteEvent = async (req, res) => {
 
     if (!event) return res.status(404).json({ msg: 'Event not found' });
 
-    await event.remove();
+    await event.deleteOne();
     res.json({ msg: 'Event deleted' });
   } catch (err) {
     console.error(err.message); // Log error for debugging

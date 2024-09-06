@@ -203,7 +203,13 @@ li button:hover {
 .btn-primary {
     border-radius: 0.25rem;
 }
-
+.logout-button {
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #dc3545; /* Danger/red color for logout */
+    margin-left: 10px;
+}
 
 /* Contact Form Styles */
 .contact-form {

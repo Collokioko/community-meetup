@@ -12,13 +12,25 @@ const Register = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    const validatePassword = (password) => {
+        // Minimum length of 6 characters
+        return password.length >= 6;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
         setSuccess('');
+
+        // Basic validation
+        if (!email || !validatePassword(password)) {
+            setError('Please enter a valid email and ensure the password is at least 6 characters long.');
+            setLoading(false);
+            return;
+        }
+
         try {
-            // Mock API call to register a new user
             await axios.post('http://localhost:5000/api/register', { name, email, password });
             setSuccess('Registration successful! You can now log in.');
             setTimeout(() => {
@@ -58,6 +70,7 @@ const Register = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     disabled={loading}
+                    inputProps={{ pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$", title: "Please enter a valid email address" }} // Email pattern validation
                 />
                 <TextField
                     label="Password"
@@ -68,6 +81,7 @@ const Register = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     disabled={loading}
+                    inputProps={{ minLength: 6, title: "Password must be at least 6 characters long" }} // Password length validation
                 />
                 <Box textAlign="center" marginTop={3}>
                     <Button

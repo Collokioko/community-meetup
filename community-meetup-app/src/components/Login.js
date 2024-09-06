@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Box, Alert } from '@mui/material';
-import axios from 'axios';
+import { loginUser } from '../services/apiService'; // Use the centralized API service
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -15,11 +15,12 @@ const Login = () => {
         setLoading(true);
         setError('');
         try {
-            const response = await axios.post('http://localhost:5000/api/login', { email, password });
+            // Use the loginUser function from your apiService
+            const response = await loginUser({ email, password });
             localStorage.setItem('authToken', response.data.token);
-            navigate('/');  // Redirect to the dashboard or home after successful login
+            navigate('/');  // Redirect to the home or dashboard after successful login
         } catch (error) {
-            setError('Invalid credentials, please try again.');
+            setError(error.response?.data?.message || 'Invalid credentials, please try again.');
         } finally {
             setLoading(false);
         }
@@ -67,7 +68,10 @@ const Login = () => {
             </form>
             <Box textAlign="center" marginTop={2}>
                 <Typography variant="body2">
-                    Don't have an account? <Button color="primary" onClick={() => navigate('/register')}>Register</Button>
+                    Don't have an account?{' '}
+                    <Button color="primary" onClick={() => navigate('/register')}>
+                        Register
+                    </Button>
                 </Typography>
             </Box>
         </Box>
