@@ -5,7 +5,8 @@ const eventSchema = new mongoose.Schema({
   description: { type: String, required: true },
   date: { type: Date, required: true },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  attendees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  attendees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // General attendees list
+  rsvps: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // RSVPs specifically
 });
 
 module.exports = mongoose.model('Event', eventSchema);

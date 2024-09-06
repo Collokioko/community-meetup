@@ -1,4 +1,3 @@
-// backend/routes/eventRoutes.js
 const express = require('express');
 const { createEvent, getEvents, updateEvent, deleteEvent, rsvpEvent } = require('../controllers/eventController');
 const { auth, adminAuth } = require('../middleware/authMiddleware');

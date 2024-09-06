@@ -21,8 +21,8 @@ module.exports = {
       const savedUser = await user.save();
 
       // Generate access and refresh tokens
-      const accessToken = await signAccessToken(savedUser.id);
-      const refreshToken = await signRefreshToken(savedUser.id);
+      const accessToken = await signAccessToken(savedUser);
+      const refreshToken = await signRefreshToken(savedUser);
 
       res.send({ accessToken, refreshToken });
     } catch (error) {
@@ -46,8 +46,8 @@ module.exports = {
       if (!isMatch) throw createError.Unauthorized('Invalid username/password');
 
       // Generate access and refresh tokens
-      const accessToken = await signAccessToken(user.id);
-      const refreshToken = await signRefreshToken(user.id);
+      const accessToken = await signAccessToken(user);
+      const refreshToken = await signRefreshToken(user);
 
       res.send({ accessToken, refreshToken });
     } catch (error) {

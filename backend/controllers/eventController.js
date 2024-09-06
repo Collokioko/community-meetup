@@ -1,4 +1,3 @@
-// backend/controllers/eventController.js
 const Event = require('../models/Event');
 
 // Create an event
@@ -17,7 +16,10 @@ exports.createEvent = async (req, res) => {
 // Get events
 exports.getEvents = async (req, res) => {
   try {
-    const events = await Event.find();
+    const events = await Event.find()
+      .populate('createdBy', 'name')  // Populating the user who created the event
+      .populate('attendees', 'name')  // Populating attendees
+      .populate('rsvps', 'name');     // Populating RSVP list
     res.json(events);
   } catch (err) {
     console.error(err.message); // Log error for debugging
@@ -68,15 +70,16 @@ exports.rsvpEvent = async (req, res) => {
 
     if (!event) return res.status(404).json({ msg: 'Event not found' });
 
-    // Assume `rsvps` is a field in the Event model where user IDs are stored
+    // Check if user has already RSVP'd
     if (!event.rsvps.includes(req.user.id)) {
       event.rsvps.push(req.user.id);
       await event.save();
+      return res.json({ msg: 'RSVP successful', event });
     }
 
-    res.json(event);
+    res.status(400).json({ msg: 'User has already RSVP\'d to this event' });
   } catch (err) {
-    console.error(err.message); // Log error for debugging
+    console.error(err.message);
     res.status(500).send('Server error');
   }
 };
