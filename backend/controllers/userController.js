@@ -1,22 +1,26 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
-const createError = require('http-errors'); // Import http-errors
+const createError = require('http-errors');
 
 // Get user profile
 exports.getUserProfile = async (req, res, next) => {
   try {
+    // Log the user object to verify ID
+    console.log('Fetching profile for user:', req.user);
+
     // Find the user by their ID and exclude the password from the response
     const user = await User.findById(req.user.id).select('-password');
+
+    // Log the result of the find operation
     if (!user) {
-      // Throw a 404 error if the user is not found
+      console.error(`User not found with ID: ${req.user.id}`);
       return next(createError(404, 'User not found'));
     }
 
-    // Return the user profile
+    console.log('User profile found:', user);
     res.json(user);
   } catch (err) {
-    console.error("Error fetching user profile:", err.message);
-    // Use createError for server errors
+    console.error("Error fetching user profile:", err.stack);
     next(createError(500, 'Server error'));
   }
 };
@@ -25,11 +29,13 @@ exports.getUserProfile = async (req, res, next) => {
 exports.updateUserProfile = async (req, res, next) => {
   const { name, email, password } = req.body;
   try {
+    console.log('Updating profile for user:', req.user);
+
     // Find the user by their ID
     let user = await User.findById(req.user.id);
 
     if (!user) {
-      // Throw a 404 error if the user is not found
+      console.error(`User not found with ID: ${req.user.id}`);
       return next(createError(404, 'User not found'));
     }
 
@@ -38,18 +44,15 @@ exports.updateUserProfile = async (req, res, next) => {
     if (email) user.email = email;
 
     if (password) {
-      // Hash the new password using bcryptjs before saving
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
     }
 
-    // Save the updated user profile
     await user.save();
-    // Return the updated user profile
+    console.log('User profile updated:', user);
     res.json(user);
   } catch (err) {
-    console.error("Error updating user profile:", err.message);
-    // Use createError for server errors
+    console.error("Error updating user profile:", err.stack);
     next(createError(500, 'Server error'));
   }
 };
@@ -57,18 +60,18 @@ exports.updateUserProfile = async (req, res, next) => {
 // Delete user profile (for admin or self-delete)
 exports.deleteUser = async (req, res, next) => {
   try {
-    // Find the user by their ID and remove them from the database
+    console.log('Deleting profile for user:', req.user);
+
     const user = await User.findByIdAndRemove(req.user.id);
     if (!user) {
-      // Throw a 404 error if the user is not found
+      console.error(`User not found with ID: ${req.user.id}`);
       return next(createError(404, 'User not found'));
     }
 
-    // Return a success message after deletion
+    console.log('User profile deleted:', user);
     res.json({ msg: 'User deleted' });
   } catch (err) {
-    console.error("Error deleting user profile:", err.message);
-    // Use createError for server errors
+    console.error("Error deleting user profile:", err.stack);
     next(createError(500, 'Server error'));
   }
 };
