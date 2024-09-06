@@ -8,7 +8,7 @@ router.get('/', auth, getEvents); // Ensure getEvents is correctly imported
 router.post('/:id/rsvp', auth, rsvpEvent); // Ensure rsvpEvent is correctly imported
 
 // Admin-only routes
-router.post('/', [auth, adminAuth], createEvent); // Ensure createEvent is correctly imported
+router.post('/', auth, createEvent); // Ensure createEvent is correctly imported
 router.put('/:id', [auth, adminAuth], updateEvent); // Ensure updateEvent is correctly imported
 router.delete('/:id', [auth, adminAuth], deleteEvent); // Ensure deleteEvent is correctly imported
 
